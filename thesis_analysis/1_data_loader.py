@@ -99,14 +99,15 @@ class DataLoader:
         # Standardize column names
         df_long.columns = df_long.columns.str.strip()
         
-        # Check for momentum factor
-        mom_cols = ['Mom', 'MOM', 'WML']
+        # Check for momentum factor - handle both "MoM" and "Mom" variations
+        mom_cols = ['Mom', 'MOM', 'MoM', 'WML']
         mom_found = False
         for col in mom_cols:
             if col in df_long.columns:
                 if col != 'Mom':
                     df_long = df_long.rename(columns={col: 'Mom'})
                 mom_found = True
+                print(f"   Found momentum factor: {col} -> Mom")
                 break
         
         if not mom_found:
@@ -174,6 +175,64 @@ class DataLoader:
         
         if len(common_dates) < len(etf_dates):
             print(f"   WARNING: Date mismatch. ETF dates: {len(etf_dates)}, Common: {len(common_dates)}")
+    
+    def run_data_checks(self):
+        """Run comprehensive data checks as outlined in the revised plan"""
+        print_section_header("COMPREHENSIVE DATA CHECKS")
+        
+        # 1. Check date alignment
+        print("\n1. Date Alignment Check:")
+        print(f"   ETF dates: {self.etf_data.index.min()} to {self.etf_data.index.max()}")
+        print(f"   Benchmark dates: {self.benchmark_data.index.min()} to {self.benchmark_data.index.max()}")
+        print(f"   Factor dates: {self.factor_data.index.min()} to {self.factor_data.index.max()}")
+        
+        # 2. Check for missing data
+        print("\n2. Missing Data Check:")
+        print(f"   ETF missing: {self.etf_data.isna().sum().sum()}")
+        print(f"   Benchmark missing: {self.benchmark_data.isna().sum().sum()}")
+        print(f"   Factor missing: {self.factor_data.isna().sum().sum()}")
+        
+        # 3. Verify momentum factor
+        print("\n3. Momentum Factor Check:")
+        if 'Mom' in self.factor_data.columns:
+            mom_data = self.factor_data['Mom']
+            mom_missing = mom_data.isna().sum()
+            mom_total = len(mom_data)
+            print(f"   Momentum data points: {mom_total - mom_missing}/{mom_total}")
+            print(f"   Momentum mean: {mom_data.mean():.4f}")
+            print(f"   Momentum std: {mom_data.std():.4f}")
+            if mom_missing > 0:
+                print(f"   WARNING: {mom_missing} missing momentum values")
+        else:
+            print("   NO MOMENTUM FACTOR - Carhart model cannot be run")
+        
+        # 4. Check portfolio correlation
+        print("\n4. Portfolio Correlation Check:")
+        # Create simple portfolios for correlation check
+        etf_portfolio = self.etf_data.mean(axis=1)
+        bench_portfolio = self.benchmark_data[list(ETF_BENCHMARK_MAP.values())].mean(axis=1)
+        
+        # Align dates
+        common_idx = etf_portfolio.index.intersection(bench_portfolio.index)
+        if len(common_idx) > 0:
+            etf_aligned = etf_portfolio.loc[common_idx]
+            bench_aligned = bench_portfolio.loc[common_idx]
+            correlation = etf_aligned.corr(bench_aligned)
+            print(f"   Portfolio correlation: {correlation:.4f}")
+            print(f"   Common observations: {len(common_idx)}")
+        else:
+            print("   No common dates for correlation calculation")
+        
+        # 5. Check factor data quality
+        print("\n5. Factor Data Quality:")
+        for factor in ['Mkt-RF', 'SMB', 'HML', 'RF']:
+            if factor in self.factor_data.columns:
+                factor_data = self.factor_data[factor]
+                print(f"   {factor}: mean={factor_data.mean():.4f}, std={factor_data.std():.4f}")
+            else:
+                print(f"   {factor}: MISSING")
+        
+        return True
     
     def get_summary_statistics(self):
         """Generate summary statistics for all loaded data"""

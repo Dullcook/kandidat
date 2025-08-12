@@ -21,7 +21,7 @@ class PortfolioConstructor:
         
         # Create ETF portfolio (equal-weighted average)
         etf_portfolio = self.etf_returns.mean(axis=1)
-        etf_portfolio.name = 'High_Sustainability_ETF_Portfolio'
+        etf_portfolio.name = 'ETF_Portfolio'
         
         # Create benchmark portfolio (equal-weighted average)
         # First, we need to match benchmarks to ETFs
@@ -54,21 +54,6 @@ class PortfolioConstructor:
         
         return self.portfolios
     
-    def create_value_weighted_portfolios(self, weights_df=None):
-        """
-        Create value-weighted portfolios
-        Note: Requires AUM or market cap data
-        """
-        print_subsection_header("Creating Value-Weighted Portfolios")
-        
-        if weights_df is None:
-            print("   No weights provided, using equal weights")
-            return self.create_equal_weighted_portfolios()
-        
-        # Implementation for value-weighted portfolios
-        # Would require AUM data for each ETF
-        pass
-    
     def _add_period_labels(self, portfolios):
         """Add crisis period labels to portfolio data"""
         print_subsection_header("Identifying Crisis Periods")
@@ -95,52 +80,58 @@ class PortfolioConstructor:
         
         return portfolios
     
-    def calculate_rolling_statistics(self, window=12):
-        """Calculate rolling statistics for portfolios"""
-        print_subsection_header(f"Calculating {window}-Month Rolling Statistics")
+    def analyze_portfolio_composition(self):
+        """Analyze what's in each portfolio"""
+        print_subsection_header("Portfolio Composition Analysis")
         
-        rolling_stats = pd.DataFrame(index=self.portfolios.index)
-        
-        for col in ['ETF_Portfolio', 'Benchmark_Portfolio']:
-            # Rolling mean (annualized)
-            rolling_stats[f'{col}_Rolling_Mean'] = \
-                self.portfolios[col].rolling(window).mean() * 12
-            
-            # Rolling volatility (annualized)
-            rolling_stats[f'{col}_Rolling_Vol'] = \
-                self.portfolios[col].rolling(window).std() * np.sqrt(12)
-            
-            # Rolling Sharpe ratio
-            rolling_stats[f'{col}_Rolling_Sharpe'] = \
-                rolling_stats[f'{col}_Rolling_Mean'] / rolling_stats[f'{col}_Rolling_Vol']
-        
-        return rolling_stats
-    
-    def calculate_tracking_error(self):
-        """Calculate tracking error of ETF portfolio vs benchmark"""
-        print_subsection_header("Calculating Tracking Error")
-        
-        # Calculate difference in returns
-        tracking_diff = self.portfolios['ETF_Portfolio'] - self.portfolios['Benchmark_Portfolio']
-        
-        # Tracking error (annualized)
-        tracking_error = tracking_diff.std() * np.sqrt(12)
-        
-        # Information ratio
-        info_ratio = (tracking_diff.mean() * 12) / tracking_error if tracking_error != 0 else np.nan
-        
-        results = {
-            'Tracking_Error': tracking_error,
-            'Information_Ratio': info_ratio,
-            'Mean_Difference': tracking_diff.mean() * 12,  # Annualized
-            'Hit_Rate': (tracking_diff > 0).mean()  # Percentage of months outperforming
+        # Count ETF types
+        etf_types = {
+            'ESG-Focused': ['Xtrackers MSCI Europe ESG ETF 1C', 
+                           'iShares MSCI Europe SRI ETF EUR Dist'],
+            'Sector ETFs': [etf for etf in self.etf_returns.columns 
+                           if etf not in ['Xtrackers MSCI Europe ESG ETF 1C', 
+                                         'iShares MSCI Europe SRI ETF EUR Dist']]
         }
         
-        print(f"   Tracking Error: {tracking_error:.2%} annualized")
-        print(f"   Information Ratio: {info_ratio:.3f}")
-        print(f"   Hit Rate: {results['Hit_Rate']:.1%}")
+        # Calculate average returns by type
+        esg_focused_returns = self.etf_returns[etf_types['ESG-Focused']].mean(axis=1)
+        sector_returns = self.etf_returns[etf_types['Sector ETFs']].mean(axis=1)
         
-        return results
+        print(f"   ESG-Focused ETFs: {len(etf_types['ESG-Focused'])}")
+        print(f"   Sector ETFs: {len(etf_types['Sector ETFs'])}")
+        print(f"   Average return - ESG: {esg_focused_returns.mean()*12:.2%}")
+        print(f"   Average return - Sector: {sector_returns.mean()*12:.2%}")
+        
+        # Calculate correlation between ESG and sector components
+        correlation = esg_focused_returns.corr(sector_returns)
+        print(f"   Correlation ESG vs Sector: {correlation:.3f}")
+        
+        return etf_types
+    
+    def analyze_period_details(self):
+        """Deep dive into period performance"""
+        print_subsection_header("Period Performance Analysis")
+        
+        for period in self.portfolios['Period'].unique():
+            period_data = self.portfolios[self.portfolios['Period'] == period]
+            
+            # Monthly breakdown
+            monthly_diff = period_data['ETF_Portfolio'] - period_data['Benchmark_Portfolio']
+            
+            print(f"\n{period}:")
+            print(f"  Months outperforming: {(monthly_diff > 0).sum()}/{len(monthly_diff)}")
+            print(f"  Average monthly difference: {monthly_diff.mean()*100:.3f}%")
+            print(f"  Best month: {monthly_diff.max()*100:.2f}%")
+            print(f"  Worst month: {monthly_diff.min()*100:.2f}%")
+            
+            # Calculate cumulative performance for the period
+            etf_cum = (1 + period_data['ETF_Portfolio']).prod() - 1
+            bench_cum = (1 + period_data['Benchmark_Portfolio']).prod() - 1
+            print(f"  Cumulative ETF: {etf_cum*100:.2f}%")
+            print(f"  Cumulative Benchmark: {bench_cum*100:.2f}%")
+            print(f"  Relative: {(etf_cum - bench_cum)*100:.2f}%")
+        
+        return True
     
     def get_crisis_performance(self):
         """Extract performance during each crisis period"""

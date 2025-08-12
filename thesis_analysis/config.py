@@ -31,21 +31,21 @@ CRISIS_PERIODS = {
 
 # ETF to Benchmark mapping
 ETF_BENCHMARK_MAP = {
-    'Xtrackers MSCI Europe ESG ETF 1C': 'MSCI Euro Low Carbon SRI Selection NR EUR',
+    'Xtrackers MSCI Europe ESG ETF 1C': 'MSCI EURO SRI SEL RED FOSSIL FUEL NR EUR',
     'SPDR® EURO STOXX 50 ETF': 'EURO STOXX 50 NR USD',
     'iShares MSCI Europe SRI ETF EUR Dist': 'MSCI EURO SRI SEL RED FOSSIL FUEL NR EUR',
-    'SPDR® MSCI Europe Industrials ETF': 'MSCI Europe Industrials 35/20 Capped NR',
-    'SPDR® MSCI Europe Financials ETF': 'MSCI Europe Financials 35/20 Capped NR',
-    'iShares STOXX Europe 600 Fin Ser (DE)': 'STOXX Europe 600 Financial Svc NR EUR',
+    'SPDR® MSCI Europe Industrials ETF': 'STOXX Europe 600 Indl Gd&Svcs NR EUR',
+    'SPDR® MSCI Europe Financials ETF': 'STOXX Europe 600 Indl Gd&Svcs NR EUR',
+    'iShares STOXX Europe 600 Fin Ser (DE)': 'STOXX Europe 600 Indl Gd&Svcs NR EUR',
     'iShares STOXX Europe 600 Insurance (DE)': 'STOXX Europe 600 Insurance NR EUR',
     'iShares STOXX Europe 600 Utilities (DE)': 'STOXX Europe 600 Utilities NR EUR',
     'iShares STOXX Europe 600 IG & Ser (DE)': 'STOXX Europe 600 Indl Gd&Svcs NR EUR',
-    'Xtrackers MSCI Europe HC Scr ETF 1C': 'MSCI Euro HlCr ESG Scrn 20-35 Sel NR EUR',
-    'SPDR® MSCI Europe Health Care ETF': 'MSCI Europe Health Care 35/20 Capped NR',
-    'SPDR® MSCI Europe Utilities ETF': 'MSCI Europe Utilities 35/20 Capped NR',
-    'Xtrackers MSCI Europe CSer Scr ETF 1C': 'MSCI EUR Com Ser ESG Scr 20-35 Se NR EUR',
+    'Xtrackers MSCI Europe HC Scr ETF 1C': 'MSCI EURO SRI SEL RED FOSSIL FUEL NR EUR',
+    'SPDR® MSCI Europe Health Care ETF': 'STOXX Europe 600 Indl Gd&Svcs NR EUR',
+    'SPDR® MSCI Europe Utilities ETF': 'STOXX Europe 600 Utilities NR EUR',
+    'Xtrackers MSCI Europe CSer Scr ETF 1C': 'STOXX Europe 600 Indl Gd&Svcs NR EUR',
     'iShares STOXX Europe 600 Media (DE)': 'STOXX Europe 600 Media NR EUR',
-    'Xtrackers MSCI Europe Indust Scr ETF 1C': 'MSCI Eur Ind ESG Scr 20-35 Sel NR EUR'
+    'Xtrackers MSCI Europe Indust Scr ETF 1C': 'STOXX Europe 600 Indl Gd&Svcs NR EUR'
 }
 
 # Risk-free rate (annual)
