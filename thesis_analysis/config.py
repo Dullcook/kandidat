@@ -16,7 +16,7 @@ FIGURES_PATH = './results/figures/'
 # Data file names
 ETF_FILE = 'ESG_ETF_CLEANED.xlsx'
 BENCHMARK_FILE = 'ESG_BENCHMARK_CLEANED.xlsx'
-FACTOR_FILE = 'Cleaned Factor data.xlsx'
+FACTOR_FILE = 'Cleaned_Factor_data.xlsx'
 
 # Analysis period
 START_DATE = '2019-01-01'

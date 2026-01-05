@@ -97,11 +97,11 @@ class ThesisVisualizer:
         """Create a clear risk-return comparison"""
         fig, ax = plt.subplots(figsize=(10, 8))
         
-        # Use basis points for return difference
+        # Convert to percentage format
         etf_return = risk_metrics.loc['ETF_Portfolio', 'Mean_Return_Annual'] * 100
         bench_return = risk_metrics.loc['Benchmark_Portfolio', 'Mean_Return_Annual'] * 100
-        etf_vol = risk_metrics.loc['ETF_Portfolio', 'Volatility_Annual']
-        bench_vol = risk_metrics.loc['Benchmark_Portfolio', 'Volatility_Annual']
+        etf_vol = risk_metrics.loc['ETF_Portfolio', 'Volatility_Annual'] * 100
+        bench_vol = risk_metrics.loc['Benchmark_Portfolio', 'Volatility_Annual'] * 100
         
         # Plot with better scale
         ax.scatter(etf_vol, etf_return, s=200, label='ESG ETF', marker='s', color=COLORS['etf'])

@@ -1,7 +1,12 @@
-# Data files (too large for git)
+# Data files (exclude by default)
 *.xlsx
 *.xls
 *.csv
+
+# But include the thesis data files
+!ESG_ETF_CLEANED.xlsx
+!ESG_BENCHMARK_CLEANED.xlsx
+!Cleaned_Factor_data.xlsx
 
 # Python cache
 __pycache__/
