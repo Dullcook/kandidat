@@ -28,8 +28,14 @@ class StatisticalTester:
         # T-test for mean difference
         t_stat, p_value = stats.ttest_ind(data1_clean, data2_clean)
         
-        # F-test for variance difference
-        f_stat = np.var(data1_clean, ddof=1) / np.var(data2_clean, ddof=1)
+        # F-test for variance difference (Levene's test is more robust)
+        var1 = np.var(data1_clean, ddof=1)
+        var2 = np.var(data2_clean, ddof=1)
+        f_stat = var1 / var2
+        df1 = len(data1_clean) - 1
+        df2 = len(data2_clean) - 1
+        # Two-tailed F-test p-value
+        f_p_value = 2 * min(stats.f.cdf(f_stat, df1, df2), 1 - stats.f.cdf(f_stat, df1, df2))
         
         # Correlation
         correlation = np.corrcoef(data1_clean, data2_clean)[0,1]
@@ -42,13 +48,13 @@ class StatisticalTester:
         
         results = {
             't_test': {'statistic': t_stat, 'p_value': p_value},
-            'f_test': {'statistic': f_stat},
+            'f_test': {'statistic': f_stat, 'p_value': f_p_value},
             'correlation': correlation,
             'mann_whitney': {'statistic': mw_stat, 'p_value': mw_p_value}
         }
         
         print(f"   T-test: t={t_stat:.4f}, p={p_value:.4f}")
-        print(f"   F-test: F={f_stat:.4f}")
+        print(f"   F-test (variance): F={f_stat:.4f}, p={f_p_value:.4f}")
         print(f"   Correlation: {correlation:.4f}")
         if not np.isnan(mw_stat):
             print(f"   Mann-Whitney: U={mw_stat:.4f}, p={mw_p_value:.4f}")

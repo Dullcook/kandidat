@@ -6,10 +6,10 @@ This repository contains the complete analysis code for a master's thesis invest
 
 ## Key Findings
 
-✅ **Risk-Adjusted Performance**: ESG ETFs showed superior Sharpe ratios (0.726 vs 0.676)  
-✅ **Downside Protection**: Better maximum drawdown (-22.14% vs -24.00%)  
-✅ **Crisis Resilience**: Outperformed during COVID-19 (+2.46%) and inflation shock (+1.09%)  
-✅ **Lower Systematic Risk**: Beta of 0.46 vs 0.50 for benchmarks  
+✅ **Risk-Adjusted Performance**: ESG ETFs showed superior Sharpe ratios (0.726 vs 0.690)  
+✅ **Downside Protection**: Better maximum drawdown (-22.1% vs -24.8%)  
+✅ **Crisis Resilience**: Outperformed during COVID-19 (+2.5%) and inflation shock (+1.3%)  
+✅ **Lower Systematic Risk**: Beta of 0.76 vs 0.86 for benchmarks  
 
 ## Analysis Period
 - **Time Frame**: January 2019 to February 2025
@@ -43,10 +43,10 @@ pip install -r requirements.txt
 ```
 
 ### 2. Prepare Data
-Place your data files in the parent directory:
+Place your data files in the project root directory:
 - `ESG_ETF_CLEANED.xlsx` - ETF returns data
 - `ESG_BENCHMARK_CLEANED.xlsx` - Benchmark returns
-- `Cleaned Factor data.xlsx` - Fama-French factors
+- `Cleaned_Factor_data.xlsx` - Fama-French factors
 
 ### 3. Run Analysis
 ```bash
@@ -104,11 +104,19 @@ python 7_main_analysis.py
 
 | Metric | ESG Portfolio | Benchmark | ESG Advantage |
 |--------|---------------|-----------|---------------|
-| Annual Return | 13.14% | 13.15% | -0.01% |
-| Annual Volatility | 15.34% | 16.32% | **-0.98%** ✅ |
-| Sharpe Ratio | 0.726 | 0.676 | **+0.050** ✅ |
-| Max Drawdown | -22.14% | -24.00% | **+1.86%** ✅ |
-| CAPM Alpha | +3.14% | +2.46% | **+0.68%** ✅ |
+| Annual Return | 13.14% | 13.92% | -0.78% |
+| Annual Volatility | 15.34% | 17.27% | **-1.93%** ✅ |
+| Sharpe Ratio | 0.726 | 0.690 | **+0.036** ✅ |
+| Max Drawdown | -22.1% | -24.8% | **+2.7%** ✅ |
+| CAPM Alpha | +4.55% | +4.54% | **+0.01%** |
+
+### Crisis Performance
+
+| Crisis Period | ESG Relative Performance |
+|---------------|-------------------------|
+| COVID-19 (Feb-Apr 2020) | **+2.5%** ✅ |
+| Inflation Shock (Mar-Oct 2022) | **+1.3%** ✅ |
+| Banking Stress (Mar 2023) | -0.6% |
 
 ## Contributing
 

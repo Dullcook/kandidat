@@ -22,10 +22,10 @@ thesis_analysis/
 ├── requirements.txt          # Python package requirements
 ├── README.md                # This file
 │
-├── Data Files (Required):
+├── Data Files (Required - in parent directory):
 │   ├── ESG_ETF_CLEANED.xlsx         # ETF returns (wide format)
 │   ├── ESG_BENCHMARK_CLEANED.xlsx   # Benchmark returns (wide format)
-│   └── Cleaned Factor data.xlsx     # Fama-French factors (wide format)
+│   └── Cleaned_Factor_data.xlsx     # Fama-French factors (wide format)
 │
 └── results/                  # Output directory (created automatically)
     ├── thesis_results.xlsx   # All numerical results

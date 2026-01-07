@@ -413,8 +413,7 @@ Portfolio Summary:
 
     def plot_risk_ratios_table(self, risk_metrics, stat_tests=None):
         """Create risk ratios comparison table"""
-        fig, ax = plt.subplots(figsize=(12, 10))
-        ax.axis('tight')
+        fig, ax = plt.subplots(figsize=(12, 7))
         ax.axis('off')
         
         # Prepare table data
@@ -468,18 +467,19 @@ Portfolio Summary:
             if 't_test' in stat_tests:
                 t_p = stat_tests['t_test']['p_value']
                 t_sig = '***' if t_p < 0.01 else '**' if t_p < 0.05 else '*' if t_p < 0.1 else ''
-                table_data.append(['T-test p-value', 
+                table_data.append(['T-test p-value (means)', 
                                  f"{t_p:.4f}{t_sig}", 
                                  '', 
                                  ''])
             
-            # Add Mann-Whitney results
-            if 'mann_whitney' in stat_tests and not np.isnan(stat_tests['mann_whitney']['statistic']):
-                mw_p = stat_tests['mann_whitney']['p_value']
-                mw_sig = '***' if mw_p < 0.01 else '**' if mw_p < 0.05 else '*' if mw_p < 0.1 else ''
-                table_data.append(['Mann-Whitney p-value', 
-                                 f"{mw_p:.4f}{mw_sig}", 
-                                 '', 
+            # Add F-test for variance
+            if 'f_test' in stat_tests and 'p_value' in stat_tests['f_test']:
+                f_stat = stat_tests['f_test']['statistic']
+                f_p = stat_tests['f_test']['p_value']
+                f_sig = '***' if f_p < 0.01 else '**' if f_p < 0.05 else '*' if f_p < 0.1 else ''
+                table_data.append(['F-test p-value (variances)', 
+                                 f"{f_p:.4f}{f_sig}", 
+                                 f"F={f_stat:.3f}", 
                                  ''])
             
             # Add correlation
@@ -492,7 +492,7 @@ Portfolio Summary:
         
         # Create table
         table = ax.table(cellText=table_data, colLabels=headers, 
-                        cellLoc='center', loc='center',
+                        cellLoc='center', loc='upper center',
                         colWidths=[0.3, 0.2, 0.2, 0.2])
         
         # Style the table
@@ -535,11 +535,11 @@ Risk Analysis Summary:
 • ESG ETF shows {'better' if etf_metrics['VaR_95_Monthly'] > bench_metrics['VaR_95_Monthly'] else 'similar'} downside protection
         """
         
-        ax.text(0.02, 0.02, summary_text, transform=ax.transAxes, 
+        ax.text(0.02, 0.05, summary_text, transform=ax.transAxes, 
                 fontsize=11, verticalalignment='bottom',
                 bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
         
-        ax.set_title('Risk Metrics Comparison: ESG ETF vs Benchmark Portfolio', fontsize=16, pad=20)
+        ax.set_title('Risk Metrics Comparison: ESG ETF vs Benchmark Portfolio', fontsize=16, pad=10, y=0.98)
         
         plt.tight_layout()
         
